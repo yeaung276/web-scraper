@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 
 from agent import get_agent
-from tools import search, ascrape_multiple_websites, llm_rank_chain
+from tools import search, ascrape_multiple_websites, allm_rank_chain
 
 app = FastAPI()
 
@@ -41,7 +41,7 @@ async def llm_search(query: str):
     # let llm pick and rank top k result or consolidate result to remove duplicate
     # start scraping the web
     # stream the result one by one for better user performancez
-    search_result = json.loads(await llm_rank_chain(query))
+    search_result = json.loads(await allm_rank_chain(query))
     gen = ascrape_multiple_websites(search_result, query, map_reduce=True)
     return StreamingResponse(gen, media_type='text/event-stream')
     

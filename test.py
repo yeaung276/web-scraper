@@ -15,7 +15,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 import constants
 from utils import timeit
 from agent import get_agent
-from tools import llm_rank_chain
+from tools import allm_rank_chain
 from prompts import MAP_PROMPT, REDUCE_PROMPT, SEARCH_QUERY_PROMPT, SEARCH_RESULT_RANK_PROMPT
 
 logging.basicConfig(
@@ -89,64 +89,11 @@ def request(url: str, query: str):
     else:
         print(f"HTTP request failed with status code {response.status_code}")
 
-    llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k", api_key=constants.OPENAI_API_KEY)
 
-    map_prompt = """
-        Collect all sentences that is description of product "{query}". The sentences must not be altered in anyway.
-        Here is the text:
-
-        "{text}"
-        DESCRIPTION:
-        """
-    map_prompt_template = PromptTemplate(
-            template=map_prompt, input_variables=["query", "text"])
-
-    llm_chain = LLMChain(
-            llm=llm,
-            prompt=map_prompt_template,
-            verbose=True,   
-        )
-    post_url = f"https://chrome.browserless.io/scrape?token={constants.BROWSERLESS_API_KEY}"
-    data = {
-        "url": url,
-        "elements": [
-            {
-                "   "
-            }
-        ]
-    }
-    headers = {
-        'Cache-Control': 'no-cache',
-        'Content-Type': 'application/json',
-    }
-    data_json = json.dumps(data)
-    response = requests.post(post_url, headers=headers, data=data_json)
-    if response.status_code == 200:
-        text = response.content
-        logging.info(response.content)
-        # if len(text) > 20000:
-        #     text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=50)
-        #     chunks = text_splitter.create_documents([text])
-        #     chain = load_summarize_chain(
-        #         llm=llm,
-        #         chain_type='map_reduce',
-        #         verbose=False,
-        #         map_prompt=map_prompt_template.partial(query=query),
-        #         combine_prompt=PromptTemplate(template=REDUCE_PROMPT, input_variables=['text'])
-        #     )
-        #     # running this map_reduce concurrently to call gpt api would be nice to have
-        #     output = chain.run(chunks)
-        #     return {'description': output, "url": url}
-        # else:
-        #     output = llm_chain.run(text=text, query=query)
-        #     return {'description': output, "url": url}
-    else:
-        print(f"HTTP status: {response.status_code}, content: {response.content}")      
-
-# print(request('https://arizer.com/solo2/', 'Arizer Solo 2'))
+print(request('https://arizer.com/solo2/', 'Arizer Solo 2'))
 
 # llm ranking
-async def llm_rank_chain(query: str):
+async def allm_rank_chain(query: str):
     start = time.time()
     def single_search(query: str):
         url = "https://google.serper.dev/search"
@@ -196,5 +143,5 @@ def agent_search(query: str):
     agent = get_agent()
     return agent.run({"input": f"your research product is: {query}"})  
 
-print('result', agent_search("Arizer Solo 2"))
+# print('result', agent_search("Arizer Solo 2"))
  

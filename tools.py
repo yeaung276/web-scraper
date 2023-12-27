@@ -144,11 +144,14 @@ async def ascrape_multiple_websites(urls: List[str], query: str, map_reduce = Fa
             
     for f in asyncio.as_completed([loop.run_in_executor(None, request, url) for url in urls]):
         result = await f
-        logging.info('sending result for {url}'.format(url=result.get('url')))
-        yield json.dumps(result)
+        if result is not None:
+            logging.info('sending result for {url}'.format(url=result.get('url')))
+            yield json.dumps(result)
+        else:
+            yield None
 
 #v2
-async def multi_search(queries: List[str]):
+async def amulti_search(queries: List[str]):
     def single_search(query: str):
         url = "https://google.serper.dev/search"
 
@@ -168,7 +171,7 @@ async def multi_search(queries: List[str]):
     return await asyncio.gather(*[loop.run_in_executor(None, single_search, query) for query in queries])
 
    
-async def llm_rank_chain(query: str):
+async def allm_rank_chain(query: str):
     llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k", api_key=constants.OPENAI_API_KEY)
     query_chain = LLMChain(
         llm=llm,
@@ -176,7 +179,7 @@ async def llm_rank_chain(query: str):
         verbose=True
     )
     queries = json.loads(query_chain.run(query=query))
-    search_result = await multi_search(queries)
+    search_result = await amulti_search(queries)
     rank_chain = LLMChain(
         llm=llm,
         prompt=PromptTemplate(
