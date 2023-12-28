@@ -16,7 +16,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
 )  
 
-@app.get('/search', description="let llm figure out best query to search in google pick top relevent site and extract")
+@app.get('/search', description="let llm figure out best query to search in google, pick top relevent site and extract")
 async def llm_search(query: str, stream: Optional[bool] = False):
     """
     # let llm figure out the query
