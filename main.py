@@ -14,10 +14,6 @@ app = FastAPI()
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("debug.log"),
-        logging.StreamHandler()
-    ]
 )  
 
 @app.get('/search', description="let llm figure out best query to search in google pick top relevent site and extract")
