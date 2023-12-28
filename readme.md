@@ -18,7 +18,7 @@ OPENAI_API_KEY =
 2. `stream`: (`bool optional`)(`default: false`) should the server stream the scraped result or not
 
 #### Response
-List of dictionary
-1. `description`: Extracted description of the website about the product
-2. `url`: Source url of the website
-3. `reduced`: Whether the description is extracted using map-reduced or not.
+List/Stream of dictionary
+1. `description`: (`string`) Extracted description of the website about the product
+2. `url`: (`string`) Source url of the website
+3. `reduced`: (`bool`) Whether the description is extracted using map-reduced or not.
