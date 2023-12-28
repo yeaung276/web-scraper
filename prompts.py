@@ -32,7 +32,7 @@ agent_prompts = {
 }
 
 EXTRACT_PROMPT = """
-    Collect all sentences that is description of product "{query}". The sentences must not be altered in anyway.
+    Remove all sentences that is not part of the description of product "{query}". The sentences must not be altered in anyway.
     Here is the text:
 
     "{text}"
@@ -52,7 +52,7 @@ REDUCE_PROMPT = """
 
 SEARCH_QUERY_PROMPT = """
     You are expert web researcher. You want to know where to buy product "{query}". 
-    Return 3 search query you should try.
+    Return 3 search query you should try to get website with most accurate description.
     Format the output as JSON array of string.
     QUERIES:
 """
@@ -60,6 +60,7 @@ SEARCH_QUERY_PROMPT = """
 SEARCH_RESULT_RANK_PROMPT = """
     You have search result from the google which include mata data of the website and its link.
     Your object is to pick top {top_k} relevent website link from the result that will describe product {query} the most.
+    Do not pick same domain twice. If the domain are the same, pick the most relevent website.
     Here is the search result. Format the output as JSON string array of website link.
     "{result}"
     RESULT:
